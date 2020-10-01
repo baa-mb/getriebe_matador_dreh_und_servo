@@ -1,3 +1,18 @@
+function schalte () {
+    schritt = (wink_1 - wink_0) / 10
+    if (lauf_b) {
+        faktor = 1
+        startwinkel = wink_0
+    } else {
+        faktor = -1
+        startwinkel = wink_1
+    }
+    for (let Index = 0; Index <= 10; Index++) {
+        w = schritt * Index
+        pins.servoWritePin(AnalogPin.P3, wink_0 + w)
+        basic.pause(500)
+    }
+}
 input.onButtonPressed(Button.A, function () {
     lauf_a = !(lauf_a)
     if (lauf_a) {
@@ -6,13 +21,25 @@ input.onButtonPressed(Button.A, function () {
         kitronik_motor_driver.motorOff(kitronik_motor_driver.Motors.Motor1)
     }
 })
+function init () {
+    radio.setGroup(54)
+    basic.showIcon(IconNames.Yes)
+    lauf_a = false
+    lauf_b = false
+    wink_0 = 75
+    wink_1 = 152
+}
+function test () {
+    for (let index = 0; index < 4; index++) {
+        basic.pause(1000)
+        pins.servoWritePin(AnalogPin.P3, wink_1)
+        basic.pause(1000)
+        pins.servoWritePin(AnalogPin.P3, wink_0)
+    }
+}
 input.onButtonPressed(Button.B, function () {
     lauf_b = !(lauf_b)
-    if (lauf_b) {
-        pins.servoWritePin(AnalogPin.P3, wink_0)
-    } else {
-        pins.servoWritePin(AnalogPin.P3, wink_1)
-    }
+    schalte()
 })
 radio.onReceivedStringDeprecated(function (receivedString) {
     if (receivedString == "A") {
@@ -32,13 +59,13 @@ radio.onReceivedStringDeprecated(function (receivedString) {
         )
     }
 })
-let wink_1 = 0
-let wink_0 = 0
-let lauf_b = false
 let lauf_a = false
-radio.setGroup(54)
-basic.showIcon(IconNames.Yes)
-lauf_a = false
-lauf_b = false
-wink_0 = 45
-wink_1 = 45
+let w = 0
+let startwinkel = 0
+let faktor = 0
+let lauf_b = false
+let wink_0 = 0
+let wink_1 = 0
+let schritt = 0
+init()
+test()
